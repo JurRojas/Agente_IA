@@ -1,0 +1,39 @@
+<!--
+Interfaz básica de chat para enviar preguntas al backend y mostrar respuestas.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Local Agent Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        #chat { max-width: 600px; margin: auto; }
+        #response { margin-top: 1em; background: #f0f0f0; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div id="chat">
+        <h2>Agente IA - Pregunta sobre una URL</h2>
+        <input type="text" id="url" placeholder="Introduce la URL" style="width:100%"><br><br>
+        <textarea id="question" placeholder="Escribe tu pregunta" style="width:100%" rows="3"></textarea><br><br>
+        <button onclick="sendQuestion()">Enviar</button>
+        <div id="response"></div>
+    </div>
+    <script>
+        async function sendQuestion() {
+            const url = document.getElementById('url').value;
+            const question = document.getElementById('question').value;
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = 'Cargando...';
+            const res = await fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url, question })
+            });
+            const data = await res.json();
+            responseDiv.innerHTML = data.answer || data.detail || 'Error';
+        }
+    </script>
+</body>
+</html>
